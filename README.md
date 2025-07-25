@@ -25,9 +25,13 @@ A simple 2-player Pong game built using **Java** and **Swing**. This is a beginn
 ## 📁 Project Structure
 ```
 PongGame-Java/
-├── src/
-│ └── PongGame.java
-├── README.md
-└── LICENSE
+src/
+├── PongGame.java        ✅ (contains main method)
+├── GameFrame.java       ✅ (creates JFrame)
+├── GamePanel.java       ✅ (main game loop)
+├── Paddle.java          ✅ (player and AI paddles)
+├── Ball.java            ✅ (the ball logic)
+└── Score.java           ✅ (draws the score)
+
 ```
 
