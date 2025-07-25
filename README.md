@@ -24,7 +24,7 @@ A simple 2-player Pong game built using **Java** and **Swing**. This is a beginn
 
 ## 📁 Project Structure
 ```
-PongGame-Java/
+PongGame/
 src/
 ├── PongGame.java        ✅ (contains main method)
 ├── GameFrame.java       ✅ (creates JFrame)
