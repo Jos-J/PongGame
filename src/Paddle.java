@@ -54,7 +54,7 @@ public class Paddle extends Rectangle {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.WHITE);
+        g.setColor(Color.black);
         g.fillRect(x, y, width, height);
     }
 }
