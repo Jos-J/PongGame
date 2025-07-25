@@ -2,7 +2,7 @@
 
 import javax.swing.JFrame;
 
-public class GameFrame extends jFrame {
+public class GameFrame extends JFrame {
 
     GamePanel panel;
 

@@ -47,14 +47,14 @@ public class GamePanel extends JPanel implements Runnable {
                         PADDLE_WIDTH, PADDLE_HEIGHT, 2);
     }
 
-    public void paint(Graphics G) {
+    public void paint(Graphics g) {
         image = createImage(getWidth(), getHeight());
         graphics = image.getGraphics();
         draw(graphics);
         g.drawImage(image, 0, 0, this);
     }
 
-    public void draw(Graphics G) {
+    public void draw(Graphics g) {
         player1.draw(g);
         ai.draw(g);
         ball.draw(g);
