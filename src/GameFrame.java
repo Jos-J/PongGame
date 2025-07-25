@@ -1,6 +1,6 @@
 // Creating GameFrame //
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
 public class GameFrame extends jFrame {
 
