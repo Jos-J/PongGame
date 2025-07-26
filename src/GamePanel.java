@@ -84,20 +84,20 @@ public class GamePanel extends JPanel implements Runnable {
 
         // ball bounces off paddels //
         if (ball.intersects(player1) || ball.intersects(ai)) {
-            playSound("assets/hit.wav")
+            playSound("assets/hit.wav");
             ball.setXDirection(-ball.xVelocity);
         }
 
         // Scoring
         if(ball.x <= 0) {
-            playSound("assets/hit.wav")
+            playSound("assets/hit.wav");
             score.ai++;
             newPaddles();
             newBall();
         }
 
         if (ball.x >= GAME_WIDTH - BALL_DIAMETER) {
-            playSound("assets/score.wav")
+            playSound("assets/score.wav");
             score.player++;
             newPaddles();
             newBall();
