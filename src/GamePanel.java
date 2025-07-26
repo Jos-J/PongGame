@@ -1,4 +1,4 @@
-// creating the GamePanel //
+// GamePanel.java
 
 import java.awt.*;
 import java.awt.event.*;
@@ -19,7 +19,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     boolean gameOver = false;
     boolean paused = false;
-    final int Win_SCORE = 5;
+    final int WIN_SCORE = 5;
 
     Thread gameThread;
     Image image;
@@ -31,9 +31,8 @@ public class GamePanel extends JPanel implements Runnable {
     Ball ball;
     Score score;
     Clip backgroundMusic;
-    
 
-    GamePanel(){
+    GamePanel() {
         background = new ImageIcon("../assets/background1.jpg").getImage();
         newPaddles();
         newBall();
@@ -44,14 +43,14 @@ public class GamePanel extends JPanel implements Runnable {
 
         playBackgroundMusic("soundtrack.wav");
 
-        gameThread =  new Thread(this);
+        gameThread = new Thread(this);
         gameThread.start();
     }
 
     public void newBall() {
         ball = new Ball(GAME_WIDTH / 2 - BALL_DIAMETER / 2,
-                    GAME_HEIGHT / 2 - BALL_DIAMETER / 2,
-                    BALL_DIAMETER, BALL_DIAMETER);
+                        GAME_HEIGHT / 2 - BALL_DIAMETER / 2,
+                        BALL_DIAMETER, BALL_DIAMETER);
     }
 
     public void newPaddles() {
@@ -68,10 +67,8 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void draw(Graphics g) {
-        // adding background//
         g.drawImage(background, 0, 0, GAME_WIDTH, GAME_HEIGHT, this);
-       
-        //game objects//
+
         player1.draw(g);
         ai.draw(g);
         ball.draw(g);
@@ -80,57 +77,68 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void move() {
         player1.move();
-        ai.moveAI(ball); // simple at follows ball
+        ai.moveAI(ball);
         ball.move();
     }
 
     public void checkCollision() {
-        //ball bounces off top & bottom//
+        // Bounce off top and bottom
         if (ball.y <= 0 || ball.y >= GAME_HEIGHT - BALL_DIAMETER) {
             ball.setYDirection(-ball.yVelocity);
         }
 
-        // ball bounces off paddels //
+        // Bounce off paddles
         if (ball.intersects(player1) || ball.intersects(ai)) {
-            playSound("../assets/hit.wav");
+            playSound("hit.wav");
             ball.setXDirection(-ball.xVelocity);
         }
 
-        // Scoring
-        if(ball.x <= 0) {
-            playSound("../assets/hit.wav");
+        // AI scores
+        if (ball.x <= 0) {
+            playSound("hit.wav");
             score.ai++;
             checkWin();
             if (!gameOver) {
-                 newPaddles();
-                 newBall();
+                newPaddles();
+                newBall();
             }
         }
 
+        // Player scores
         if (ball.x >= GAME_WIDTH - BALL_DIAMETER) {
-            playSound("../assets/score.wav");
+            playSound("score.wav");
             score.player++;
             checkWin();
             if (!gameOver) {
-                 newPaddles();
-                 newBall();
+                newPaddles();
+                newBall();
             }
         }
-
     }
-     public void checkWin() {
-        if (score.player >= Win_SCORE) {
+
+    public void checkWin() {
+        if (score.player >= WIN_SCORE) {
             System.out.println("🎉 Player Wins!");
             gameOver = true;
-        } else if (score.ai >= Win_SCORE) {
-            System.out.println("💻 AI Wins!")
+        } else if (score.ai >= WIN_SCORE) {
+            System.out.println("💻 AI Wins!");
             gameOver = true;
         }
 
         if (backgroundMusic != null && backgroundMusic.isRunning()) {
             backgroundMusic.stop();
-         }
-     }    
+        }
+    }
+
+    public void resetGame() {
+        score.player = 0;
+        score.ai = 0;
+        gameOver = false;
+        paused = false;
+        newPaddles();
+        newBall();
+        playBackgroundMusic("soundtrack.wav");
+    }
 
     public void run() {
         long lastTime = System.nanoTime();
@@ -154,46 +162,51 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    }
-
     public class AL extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
             player1.keyPressed(e);
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            pause = !paused;
-            System.out.println(paused ? "⏸️ Paused" : "▶️ Resumed");
+
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                if (!gameOver) {
+                    paused = !paused;
+                    System.out.println(paused ? "⏸️ Paused" : "▶️ Resumed");
+                }
+            }
+
+            if (e.getKeyCode() == KeyEvent.VK_R) {
+                System.out.println("🔁 Game Reset");
+                resetGame();
+            }
         }
-    }
-    @Override
+
+        @Override
         public void keyReleased(KeyEvent e) {
             player1.keyReleased(e);
         }
     }
 
-    // Adding sound play back//
     public void playSound(String soundFile) {
-    try {
-        File file = new File("../assets/" + soundFile);
-        AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-        Clip clip = AudioSystem.getClip();
-        clip.open(audioStream);
-        clip.start();
-    } catch (Exception e) {
-        System.out.println("Sound error: " + e.getMessage());
-    }
-    
+        try {
+            File file = new File("../assets/" + soundFile);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        } catch (Exception e) {
+            System.out.println("Sound error: " + e.getMessage());
+        }
     }
 
     public void playBackgroundMusic(String musicFile) {
-    try {
-        File file = new File("../assets/" + musicFile);
-        AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-        backgroundMusic = AudioSystem.getClip();
-        backgroundMusic.open(audioStream);
-        backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY); // loop forever
-    } catch (Exception e) {
-        System.out.println("Music error: " + e.getMessage());
+        try {
+            File file = new File("../assets/" + musicFile);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+            backgroundMusic = AudioSystem.getClip();
+            backgroundMusic.open(audioStream);
+            backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {
+            System.out.println("Music error: " + e.getMessage());
+        }
     }
 }
-
