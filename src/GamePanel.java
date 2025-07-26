@@ -42,7 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(new AL());
         this.setPreferredSize(SCREEN_SIZE);
 
-        playBackgroundMusic("../assets/soundtrack.wav");
+        playBackgroundMusic("soundtrack.wav");
 
         gameThread =  new Thread(this);
         gameThread.start();
@@ -103,7 +103,7 @@ public class GamePanel extends JPanel implements Runnable {
             checkWin();
             if (!gameOver) {
                  newPaddles();
-                 newBall()
+                 newBall();
             }
         }
 
@@ -122,11 +122,15 @@ public class GamePanel extends JPanel implements Runnable {
         if (score.player >= Win_SCORE) {
             System.out.println("🎉 Player Wins!");
             gameOver = true;
-        } 
-        if (backgroundMusic != null && backgroundMusic.isRunning()) {
-    backgroundMusic.stop();
-    }
+        } else if (score.ai >= Win_SCORE) {
+            System.out.println("💻 AI Wins!")
+            gameOver = true;
+        }
 
+        if (backgroundMusic != null && backgroundMusic.isRunning()) {
+            backgroundMusic.stop();
+         }
+     }    
 
     public void run() {
         long lastTime = System.nanoTime();
@@ -153,14 +157,15 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public class AL extends KeyAdapter {
+        @Override
         public void keyPressed(KeyEvent e) {
             player1.keyPressed(e);
-        }
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             pause = !paused;
             System.out.println(paused ? "⏸️ Paused" : "▶️ Resumed");
         }
-
+    }
+    @Override
         public void keyReleased(KeyEvent e) {
             player1.keyReleased(e);
         }
@@ -192,5 +197,3 @@ public class GamePanel extends JPanel implements Runnable {
     }
 }
 
-
-}
