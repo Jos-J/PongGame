@@ -28,7 +28,7 @@ public class GamePanel extends JPanel implements Runnable {
     Score score;
 
     GamePanel(){
-        background = new ImageIcon("assets/background1.jpg").getImage();
+        background = new ImageIcon("../assets/background1.jpg").getImage();
         newPaddles();
         newBall();
         score = new Score(GAME_WIDTH, GAME_HEIGHT);
@@ -84,20 +84,20 @@ public class GamePanel extends JPanel implements Runnable {
 
         // ball bounces off paddels //
         if (ball.intersects(player1) || ball.intersects(ai)) {
-            playSound("assets/hit.wav");
+            playSound("../assets/hit.wav");
             ball.setXDirection(-ball.xVelocity);
         }
 
         // Scoring
         if(ball.x <= 0) {
-            playSound("assets/hit.wav");
+            playSound("../assets/hit.wav");
             score.ai++;
             newPaddles();
             newBall();
         }
 
         if (ball.x >= GAME_WIDTH - BALL_DIAMETER) {
-            playSound("assets/score.wav");
+            playSound("../assets/score.wav");
             score.player++;
             newPaddles();
             newBall();
@@ -137,15 +137,15 @@ public class GamePanel extends JPanel implements Runnable {
 
     // Adding sound play back//
     public void playSound(String soundFile) {
-        try {
-            File file = new File(soundFile);
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            clip.start();
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
-        }
+    try {
+        File file = new File("../assets/" + soundFile);
+        AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioStream);
+        clip.start();
+    } catch (Exception e) {
+        System.out.println("Sound error: " + e.getMessage());
     }
+}
 
 }
