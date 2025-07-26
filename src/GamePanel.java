@@ -17,6 +17,10 @@ public class GamePanel extends JPanel implements Runnable {
     static final int PADDLE_HEIGHT = 100;
     static final int BALL_DIAMETER = 20;
 
+    boolean gameOver = false;
+    boolean paused = false;
+    final int Win_SCORE = 5;
+
     Thread gameThread;
     Image image;
     Graphics graphics;
@@ -26,6 +30,8 @@ public class GamePanel extends JPanel implements Runnable {
     Paddle ai;
     Ball ball;
     Score score;
+    Clip backgroundMusic;
+    
 
     GamePanel(){
         background = new ImageIcon("../assets/background1.jpg").getImage();
@@ -35,6 +41,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
         this.addKeyListener(new AL());
         this.setPreferredSize(SCREEN_SIZE);
+
+        playBackgroundMusic("../assets/soundtrack.wav");
 
         gameThread =  new Thread(this);
         gameThread.start();
@@ -92,18 +100,33 @@ public class GamePanel extends JPanel implements Runnable {
         if(ball.x <= 0) {
             playSound("../assets/hit.wav");
             score.ai++;
-            newPaddles();
-            newBall();
+            checkWin();
+            if (!gameOver) {
+                 newPaddles();
+                 newBall()
+            }
         }
 
         if (ball.x >= GAME_WIDTH - BALL_DIAMETER) {
             playSound("../assets/score.wav");
             score.player++;
-            newPaddles();
-            newBall();
+            checkWin();
+            if (!gameOver) {
+                 newPaddles();
+                 newBall();
+            }
         }
 
     }
+     public void checkWin() {
+        if (score.player >= Win_SCORE) {
+            System.out.println("🎉 Player Wins!");
+            gameOver = true;
+        } 
+        if (backgroundMusic != null && backgroundMusic.isRunning()) {
+    backgroundMusic.stop();
+    }
+
 
     public void run() {
         long lastTime = System.nanoTime();
@@ -117,17 +140,25 @@ public class GamePanel extends JPanel implements Runnable {
             lastTime = now;
 
             if (delta >= 1) {
-                move();
-                checkCollision();
+                if (!paused && !gameOver) {
+                    move();
+                    checkCollision();
+                }
                 repaint();
                 delta--;
             }
         }
     }
 
+    }
+
     public class AL extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
             player1.keyPressed(e);
+        }
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            pause = !paused;
+            System.out.println(paused ? "⏸️ Paused" : "▶️ Resumed");
         }
 
         public void keyReleased(KeyEvent e) {
@@ -146,6 +177,20 @@ public class GamePanel extends JPanel implements Runnable {
     } catch (Exception e) {
         System.out.println("Sound error: " + e.getMessage());
     }
+    
+    }
+
+    public void playBackgroundMusic(String musicFile) {
+    try {
+        File file = new File("../assets/" + musicFile);
+        AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+        backgroundMusic = AudioSystem.getClip();
+        backgroundMusic.open(audioStream);
+        backgroundMusic.loop(Clip.LOOP_CONTINUOUSLY); // loop forever
+    } catch (Exception e) {
+        System.out.println("Music error: " + e.getMessage());
+    }
 }
+
 
 }
