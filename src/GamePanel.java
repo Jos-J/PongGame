@@ -1,5 +1,3 @@
-// GamePanel.java
-
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -49,14 +47,14 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void newBall() {
         ball = new Ball(GAME_WIDTH / 2 - BALL_DIAMETER / 2,
-                        GAME_HEIGHT / 2 - BALL_DIAMETER / 2,
-                        BALL_DIAMETER, BALL_DIAMETER);
+                GAME_HEIGHT / 2 - BALL_DIAMETER / 2,
+                BALL_DIAMETER, BALL_DIAMETER);
     }
 
     public void newPaddles() {
         player1 = new Paddle(0, GAME_HEIGHT / 2 - PADDLE_HEIGHT / 2, PADDLE_WIDTH, PADDLE_HEIGHT, 1);
         ai = new Paddle(GAME_WIDTH - PADDLE_WIDTH, GAME_HEIGHT / 2 - PADDLE_HEIGHT / 2,
-                        PADDLE_WIDTH, PADDLE_HEIGHT, 2);
+                PADDLE_WIDTH, PADDLE_HEIGHT, 2);
     }
 
     public void paint(Graphics g) {
@@ -67,12 +65,29 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void draw(Graphics g) {
+        // draw background
         g.drawImage(background, 0, 0, GAME_WIDTH, GAME_HEIGHT, this);
 
+        // draw game objects
         player1.draw(g);
         ai.draw(g);
         ball.draw(g);
         score.draw(g);
+
+        // show pause or game over messages
+        if (paused) {
+            g.setColor(Color.YELLOW);
+            g.setFont(new Font("Arial", Font.BOLD, 40));
+            g.drawString("PAUSED", GAME_WIDTH / 2 - 80, GAME_HEIGHT / 2);
+        }
+        if (gameOver) {
+            g.setColor(Color.RED);
+            g.setFont(new Font("Arial", Font.BOLD, 40));
+            String winner = score.player >= WIN_SCORE ? "PLAYER WINS!" : "AI WINS!";
+            g.drawString(winner, GAME_WIDTH / 2 - 150, GAME_HEIGHT / 2);
+            g.setFont(new Font("Arial", Font.PLAIN, 20));
+            g.drawString("Press 'R' to Restart", GAME_WIDTH / 2 - 100, GAME_HEIGHT / 2 + 40);
+        }
     }
 
     public void move() {
@@ -82,18 +97,18 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void checkCollision() {
-        // Bounce off top and bottom
+        // ball bounces off top & bottom
         if (ball.y <= 0 || ball.y >= GAME_HEIGHT - BALL_DIAMETER) {
             ball.setYDirection(-ball.yVelocity);
         }
 
-        // Bounce off paddles
+        // ball bounces off paddles
         if (ball.intersects(player1) || ball.intersects(ai)) {
             playSound("hit.wav");
             ball.setXDirection(-ball.xVelocity);
         }
 
-        // AI scores
+        // scoring
         if (ball.x <= 0) {
             playSound("hit.wav");
             score.ai++;
@@ -104,7 +119,6 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-        // Player scores
         if (ball.x >= GAME_WIDTH - BALL_DIAMETER) {
             playSound("score.wav");
             score.player++;
@@ -120,13 +134,11 @@ public class GamePanel extends JPanel implements Runnable {
         if (score.player >= WIN_SCORE) {
             System.out.println("🎉 Player Wins!");
             gameOver = true;
+            stopBackgroundMusic();
         } else if (score.ai >= WIN_SCORE) {
             System.out.println("💻 AI Wins!");
             gameOver = true;
-        }
-
-        if (backgroundMusic != null && backgroundMusic.isRunning()) {
-            backgroundMusic.stop();
+            stopBackgroundMusic();
         }
     }
 
@@ -138,6 +150,13 @@ public class GamePanel extends JPanel implements Runnable {
         newPaddles();
         newBall();
         playBackgroundMusic("soundtrack.wav");
+    }
+
+    public void stopBackgroundMusic() {
+        if (backgroundMusic != null && backgroundMusic.isRunning()) {
+            backgroundMusic.stop();
+            backgroundMusic.close();
+        }
     }
 
     public void run() {
@@ -162,21 +181,20 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    // KeyListener inner class
     public class AL extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
             player1.keyPressed(e);
 
             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                if (!gameOver) {
-                    paused = !paused;
-                    System.out.println(paused ? "⏸️ Paused" : "▶️ Resumed");
-                }
+                paused = !paused;
+                System.out.println(paused ? "⏸️ Paused" : "▶️ Resumed");
             }
 
-            if (e.getKeyCode() == KeyEvent.VK_R) {
-                System.out.println("🔁 Game Reset");
+            if (e.getKeyCode() == KeyEvent.VK_R && gameOver) {
                 resetGame();
+                System.out.println("🔄 Game Reset!");
             }
         }
 
@@ -186,6 +204,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    // Play short sound effects (hit, score)
     public void playSound(String soundFile) {
         try {
             File file = new File("../assets/" + soundFile);
@@ -198,8 +217,15 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    // Play background music (looped)
     public void playBackgroundMusic(String musicFile) {
         try {
+            // stop & close existing music before starting new one
+            if (backgroundMusic != null) {
+                backgroundMusic.stop();
+                backgroundMusic.close();
+            }
+
             File file = new File("../assets/" + musicFile);
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
             backgroundMusic = AudioSystem.getClip();
