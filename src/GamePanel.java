@@ -4,6 +4,9 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.Random;
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -17,6 +20,7 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
     Image image;
     Graphics graphics;
+    Image background;
     Random random;
     Paddle player1;
     Paddle ai;
@@ -24,6 +28,7 @@ public class GamePanel extends JPanel implements Runnable {
     Score score;
 
     GamePanel(){
+        background = new ImageIcon("assets/background1.jpg").getImage();
         newPaddles();
         newBall();
         score = new Score(GAME_WIDTH, GAME_HEIGHT);
@@ -55,6 +60,10 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void draw(Graphics g) {
+        // adding background//
+        g.drawImage(background, 0, 0, GAME_WIDTH, GAME_HEIGHT, this);
+       
+        //game objects//
         player1.draw(g);
         ai.draw(g);
         ball.draw(g);
@@ -75,17 +84,20 @@ public class GamePanel extends JPanel implements Runnable {
 
         // ball bounces off paddels //
         if (ball.intersects(player1) || ball.intersects(ai)) {
+            playSound("assets/hit.wav")
             ball.setXDirection(-ball.xVelocity);
         }
 
         // Scoring
         if(ball.x <= 0) {
+            playSound("assets/hit.wav")
             score.ai++;
             newPaddles();
             newBall();
         }
 
         if (ball.x >= GAME_WIDTH - BALL_DIAMETER) {
+            playSound("assets/score.wav")
             score.player++;
             newPaddles();
             newBall();
@@ -120,6 +132,19 @@ public class GamePanel extends JPanel implements Runnable {
 
         public void keyReleased(KeyEvent e) {
             player1.keyReleased(e);
+        }
+    }
+
+    // Adding sound play back//
+    public void playSound(String soundFile) {
+        try {
+            File file = new File(soundFile);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
         }
     }
 
