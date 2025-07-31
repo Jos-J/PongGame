@@ -6,7 +6,7 @@ A simple 2-player Pong game built using **Java** and **Swing**. This is a beginn
 
 ## 🧠 Features
 
-- 2-player paddle controls
+- 1-player paddle controls
 - Bouncing ball with collision detection
 - Basic game window using `JFrame`
 - Keyboard input for paddle movement
