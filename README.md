@@ -1,6 +1,6 @@
 # Pong Game in Java 🎮
 
-A simple 2-player Pong game built using **Java** and **Swing**. This is a beginner-friendly project focused on game logic, user input, and GUI programming.
+A simple 1 Pong game built using **Java** and **Swing**. This is a beginner-friendly project focused on game logic, user input, and GUI programming.
 
 ---
 
@@ -40,7 +40,9 @@ PongGame/
 └── README.md
 ```
 ## ▶️ How to Play
-🔹 on main branch enter cd src
+🔹 Clone the repo to IDE of choice. (I use Vscode)
+
+🔹 On main branch enter cd src
 
 🔹 Enter javac *.java 
 
