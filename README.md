@@ -40,4 +40,11 @@ PongGame/
 ├── LICENSE
 └── README.md
 ```
+## ▶️ How to Play
+🔹 on main branch enter cd src
+
+🔹 Enter javac *.java 
+
+🔹 Enter java PongGame
+
 
