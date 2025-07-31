@@ -1,4 +1,4 @@
-# Pong Game in Java 🎮
+# Pong Game in Java 🎮   ![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 A simple 1 Pong game built using **Java** and **Swing**. This is a beginner-friendly project focused on game logic, user input, and GUI programming.
 
@@ -47,5 +47,4 @@ PongGame/
 🔹 Enter javac *.java 
 
 🔹 Enter java PongGame
-
 
