@@ -24,6 +24,11 @@ A simple 1v Pong game built using **Java** and **Swing**. This is a beginner-fri
 ## 📁 Project Structure
 ```
 PongGame/
+├── assets/
+│   ├── background1.jpg
+│   ├── hit.wav
+│   ├── score.wav
+│   └── soundtrack.wav
 ├── src/
 │   ├── Ball.java
 │   ├── GameFrame.java
@@ -31,12 +36,6 @@ PongGame/
 │   ├── Paddle.java
 │   ├── PongGame.java
 │   └── Score.java
-├── assets/
-│   ├── background1.jpg
-│   ├── hit.wav
-│   ├── score.wav
-│   └── soundtrack.wav
-├── LICENSE
 └── README.md
 ```
 ## ▶️ How to Play
