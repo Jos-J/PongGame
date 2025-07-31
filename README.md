@@ -18,7 +18,6 @@ A simple 2-player Pong game built using **Java** and **Swing**. This is a beginn
 | Player | Move Up | Move Down |
 |--------|---------|-----------|
 | Player 1 (Left) | `W` key | `S` key |
-| Player 2 (Right) | Up arrow | Down arrow |
 
 ---
 
