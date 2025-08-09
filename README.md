@@ -29,6 +29,15 @@ PongGame/
 │   ├── hit.wav
 │   ├── score.wav
 │   └── soundtrack.wav
+├── bin/                                  # ← Compiled .class files will go here
+│   └── src/
+│       ├── Ball.class
+│       ├── GameFrame.class
+│       ├── GamePanel.class
+│       ├── GamePanel$AL.class
+│       ├── Paddle.class
+│       ├── PongGame.class
+│       └── Score.class
 ├── src/
 │   ├── Ball.java
 │   ├── GameFrame.java
